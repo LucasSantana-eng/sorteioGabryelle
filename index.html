@@ -74,7 +74,7 @@
 
     <!-- RODAPÉ -->
     <footer class="text-center text-xs text-amber-500/50 pb-4 font-cinzel">
-        Lucas Henrique &copy; 2026 - Todos os direitos reservados
+        Gabryelle Prime Music &copy; 2026 - Todos os direitos reservados
     </footer>
 
     <!-- MODAL DE CADASTRO -->
@@ -162,16 +162,15 @@
 
     <!-- SCRIPT DE INTEGRAÇÃO COM SUPABASE -->
     <script>
-        // CONFIGURAÇÕES DO SUPABASE COM SUAS CHAVES
         const SUPABASE_URL = 'https://qxqxjrpdhhrsgxjzypua.supabase.co';
         const SUPABASE_ANON_KEY = 'Sb_publishable_gRb2WDgOwFDV6UEQ2kgoew_UIh8jCBM';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        const TOTAL_NUMEROS = 135; // Expansão para 135 números
-        const SENHA_ADMIN_MESTRE = '010926'; // Senha para abrir o painel de sorteio
+        const TOTAL_NUMEROS = 135;
+        const SENHA_ADMIN_MESTRE = '1234';
         let numeroSelecionado = null;
-        let reservasMap = {}; // Estrutura local com as reservas do banco
+        let reservasMap = {};
 
         document.addEventListener('DOMContentLoaded', () => {
             renderizarGridVisual();
@@ -179,7 +178,6 @@
             escutarMudancasTempoReal();
         });
 
-        // Máscara Automática de WhatsApp com DDD: (XX) XXXXX-XXXX
         function mascaraTelefone(input) {
             let value = input.value.replace(/\D/g, "");
             if (value.length > 11) value = value.slice(0, 11);
@@ -195,7 +193,6 @@
             }
         }
 
-        // Montar a tabela de 1 a 135
         function renderizarGridVisual() {
             const grid = document.getElementById('grid-numeros');
             grid.innerHTML = '';
@@ -209,7 +206,6 @@
             }
         }
 
-        // Buscar dados sincronizados do Supabase
         async function buscarReservasDoBanco() {
             try {
                 const { data, error } = await supabaseClient.from('reservas').select('*');
@@ -229,7 +225,6 @@
             }
         }
 
-        // Conexão em tempo real via WebSockets
         function escutarMudancasTempoReal() {
             supabaseClient
                 .channel('public:reservas')
@@ -239,7 +234,6 @@
                 .subscribe();
         }
 
-        // Atualizar cor dos botões (Disponível x Reservado)
         function atualizarVisualTabela() {
             for (let i = 1; i <= TOTAL_NUMEROS; i++) {
                 const btn = document.getElementById(`num-${i}`);
@@ -270,7 +264,7 @@
             numeroSelecionado = null;
         }
 
-        // Gravação da Reserva com Validação Antifraude de Telefone Único
+        // Gravação direta exibindo a mensagem de erro exata do Supabase em caso de falha
         async function salvarReserva(event) {
             event.preventDefault();
             const nome = document.getElementById('nome-cliente').value.trim();
@@ -283,54 +277,34 @@
             }
 
             const btnConfirmar = document.getElementById('btn-confirmar');
-            btnConfirmar.innerText = "Verificando...";
+            btnConfirmar.innerText = "Salvando...";
             btnConfirmar.disabled = true;
 
             try {
-                // 1. Validar se o telefone já foi utilizado em outro número
-                const { data: listaAtual, error: errBusca } = await supabaseClient.from('reservas').select('*');
-
-                if (!errBusca && listaAtual) {
-                    const jaExiste = listaAtual.some(item => {
-                        const telBancoLimpo = item.telefone.replace(/\D/g, "");
-                        return telBancoLimpo === telefoneApenasNumeros;
-                    });
-
-                    if (jaExiste) {
-                        alert('❌ Este número de telefone já possui uma reserva ativa! Não é permitido o mesmo telefone para mais de um número.');
-                        resetarBotaoConfirmar();
-                        return;
-                    }
-                }
-
-                // 2. Gravar no Supabase
-                const { error: errInsert } = await supabaseClient
+                const { data, error } = await supabaseClient
                     .from('reservas')
                     .insert([{ numero: numeroSelecionado, nome: nome, telefone: telefoneFormatted }]);
 
-                if (errInsert) {
-                    alert('❌ Não foi possível realizar a reserva. Este número pode já ter sido escolhido.');
+                if (error) {
+                    alert(`❌ ERRO DO BANCO DE DADOS:\n${error.message || JSON.stringify(error)}`);
                     buscarReservasDoBanco();
                     fecharModalCadastro();
                     resetarBotaoConfirmar();
                     return;
                 }
 
-                // Sucesso! Abrir mensagem formatada de comprovante no WhatsApp
+                // Sucesso!
                 const numFormatado = numeroSelecionado < 10 ? `0${numeroSelecionado}` : numeroSelecionado;
                 fecharModalCadastro();
                 resetarBotaoConfirmar();
                 buscarReservasDoBanco();
 
                 const textoWpp = encodeURIComponent(`Olá! Confirmo a reserva do meu número da sorte *#${numFormatado}* na Gabryelle Prime Music.\n\nNome: ${nome}\nTelefone: ${telefoneFormatted}`);
-                
-                // Número do WhatsApp do estabelecimento
                 const seuWhatsApp = "5577999999999"; 
                 window.open(`https://wa.me/${seuWhatsApp}?text=${textoWpp}`, '_blank');
 
             } catch (err) {
-                console.error(err);
-                alert("Ocorreu um erro inesperado. Tente novamente.");
+                alert(`❌ EXCEÇÃO:\n${err.message || err}`);
                 resetarBotaoConfirmar();
             }
         }
@@ -341,7 +315,6 @@
             btnConfirmar.disabled = false;
         }
 
-        // CONTROLE DO PAINEL DE SORTEIO
         function abrirModalAdmin() {
             document.getElementById('modal-senha').classList.remove('hidden');
             document.getElementById('modal-senha').classList.add('flex');
@@ -379,7 +352,7 @@
         }
 
         async function resetarTabela() {
-            if (confirm("Tem certeza de que deseja apagar todas as reservas ativas da tabela para o próximo dia/sorteio?")) {
+            if (confirm("Tem certeza de que deseja apagar todas as reservas ativas da tabela?")) {
                 const { error } = await supabaseClient.from('reservas').delete().neq('numero', 0);
                 if (!error) {
                     alert('Tabela reiniciada com sucesso!');
@@ -390,7 +363,6 @@
             }
         }
 
-        // Execução e Animação do Sorteio
         async function realizarSorteio() {
             await carregarReservas();
             const numerosOcupados = Object.keys(reservasMap).map(Number);
@@ -424,7 +396,6 @@
                     document.getElementById('ganhador-nome').innerText = dadosGanhador.nome;
                     document.getElementById('ganhador-tel').innerText = `Telefone: ${dadosGanhador.telefone}`;
                     
-                    // Mensagem Oficial do Resultado para o Ganhador no WhatsApp
                     const msgWppGanhador = encodeURIComponent(`Parabéns ${dadosGanhador.nome}! 🏆\n\nVocê é o grande GANHADOR do sorteio da *Gabryelle Prime Music* com o número da sorte *#${numFinalStr}*!\n\nEntre em contato conosco para combinar o recebimento do seu prêmio! 🎉🍕`);
                     
                     const telGanhadorLimpo = dadosGanhador.telefone.replace(/\D/g, '');
