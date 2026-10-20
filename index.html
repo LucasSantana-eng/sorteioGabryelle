@@ -74,7 +74,7 @@
 
     <!-- RODAPÉ -->
     <footer class="text-center text-xs text-amber-500/50 pb-4 font-cinzel">
-        Gabryelle Prime Music &copy; 2026 - Todos os direitos reservados
+        Lucas Henrique &copy; 2026 - Todos os direitos reservados
     </footer>
 
     <!-- MODAL DE CADASTRO -->
@@ -162,13 +162,14 @@
 
     <!-- SCRIPT DE INTEGRAÇÃO COM SUPABASE -->
     <script>
+        // CREDENCIAIS OFICIAIS ATUALIZADAS
         const SUPABASE_URL = 'https://qxqxjrpdhhrsgxjzypua.supabase.co';
-        const SUPABASE_ANON_KEY = 'Sb_publishable_gRb2WDgOwFDV6UEQ2kgoew_UIh8jCBM';
+        const SUPABASE_ANON_KEY = 'sb_publishable_gRb2WDgOwFDV6UEQ2kgoew_UIh8jCBM';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const TOTAL_NUMEROS = 135;
-        const SENHA_ADMIN_MESTRE = '1234';
+        const SENHA_ADMIN_MESTRE = '010926';
         let numeroSelecionado = null;
         let reservasMap = {};
 
@@ -264,7 +265,6 @@
             numeroSelecionado = null;
         }
 
-        // Gravação direta exibindo a mensagem de erro exata do Supabase em caso de falha
         async function salvarReserva(event) {
             event.preventDefault();
             const nome = document.getElementById('nome-cliente').value.trim();
@@ -286,14 +286,13 @@
                     .insert([{ numero: numeroSelecionado, nome: nome, telefone: telefoneFormatted }]);
 
                 if (error) {
-                    alert(`❌ ERRO DO BANCO DE DADOS:\n${error.message || JSON.stringify(error)}`);
+                    alert(`❌ ERRO DO SUPABASE:\n${error.message}`);
                     buscarReservasDoBanco();
                     fecharModalCadastro();
                     resetarBotaoConfirmar();
                     return;
                 }
 
-                // Sucesso!
                 const numFormatado = numeroSelecionado < 10 ? `0${numeroSelecionado}` : numeroSelecionado;
                 fecharModalCadastro();
                 resetarBotaoConfirmar();
