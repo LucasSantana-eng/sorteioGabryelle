@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gabryelle Prime Music - Rifa de Números</title>
+    <title>Gabryelle Prime Music - Rifa de Números (1 a 135)</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Supabase JS Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Canvas Confetti para a comemoração do Sorteio -->
+    <!-- Canvas Confetti para o Sorteio -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Poppins:wght@400;500;600;700&display=swap');
@@ -55,10 +55,10 @@
         </button>
     </header>
 
-    <!-- ÁREA PRINCIPAL / TABELA DE 100 NÚMEROS (10 COLUNAS) -->
+    <!-- ÁREA PRINCIPAL / TABELA DE 135 NÚMEROS -->
     <main class="w-full max-w-4xl bg-[#1A0E0B]/80 border border-amber-900/40 rounded-2xl p-4 md:p-8 shadow-2xl backdrop-blur-md mb-6">
         <div class="text-center mb-6">
-            <h2 class="font-cinzel text-xl md:text-2xl font-bold text-amber-100">Escolha o seu Número da Sorte</h2>
+            <h2 class="font-cinzel text-xl md:text-2xl font-bold text-amber-100">Escolha o seu Número da Sorte (1 a 135)</h2>
             <p class="text-sm text-gray-400 mt-1">Selecione um número livre na tabela abaixo para garantir sua participação.</p>
             <div class="flex items-center justify-center gap-6 mt-4 text-xs font-medium">
                 <div class="flex items-center gap-2"><span class="w-4 h-4 rounded bg-[#2A1813] border border-amber-500/40 inline-block"></span> Livre</div>
@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <!-- Grid de 10 Colunas -->
+        <!-- Grid de 10 Colunas adaptável para 135 Números -->
         <div id="grid-numeros" class="grid grid-cols-5 sm:grid-cols-10 gap-2 md:gap-3">
             <!-- Gerado via JS -->
         </div>
@@ -74,7 +74,7 @@
 
     <!-- RODAPÉ -->
     <footer class="text-center text-xs text-amber-500/50 pb-4 font-cinzel">
-        Lucas Henrique &copy; 2026 - Todos os direitos reservados
+        Gabryelle Prime Music &copy; 2026 - Todos os direitos reservados
     </footer>
 
     <!-- MODAL DE CADASTRO -->
@@ -90,7 +90,7 @@
                 </div>
                 <div>
                     <label class="block text-xs uppercase tracking-wider text-amber-300/80 mb-1 font-semibold">WhatsApp (com DDD)</label>
-                    <input type="tel" id="tel-cliente" required placeholder="(00) 00000-0000" class="w-full bg-[#120A08] border border-amber-900/60 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-white placeholder-gray-600">
+                    <input type="tel" id="tel-cliente" required placeholder="(00) 00000-0000" maxlength="15" oninput="mascaraTelefone(this)" class="w-full bg-[#120A08] border border-amber-900/60 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 text-white placeholder-gray-600">
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button type="button" onclick="fecharModalCadastro()" class="flex-1 bg-transparent hover:bg-white/5 border border-amber-500/30 text-amber-300 font-semibold py-3 rounded-xl text-sm transition-all">Cancelar</button>
@@ -129,7 +129,7 @@
                 <div class="bg-[#120A08] border border-amber-900/40 rounded-xl p-4 mb-6 flex justify-between items-center">
                     <div>
                         <span class="text-xs text-gray-400 block">Números já preenchidos:</span>
-                        <span id="total-preenchidos" class="font-cinzel text-2xl font-bold text-amber-300">0 / 100</span>
+                        <span id="total-preenchidos" class="font-cinzel text-2xl font-bold text-amber-300">0 / 135</span>
                     </div>
                     <div class="flex gap-2">
                         <button onclick="carregarReservas()" class="text-xs bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 px-3 py-2 rounded-lg transition-all">🔄 Atualizar Dados</button>
@@ -144,8 +144,8 @@
                         <span class="inline-block bg-amber-500 text-black font-bold text-xs uppercase px-3 py-1 rounded-full mb-3 shadow-md">🎉 Ganhador Oficial 🎉</span>
                         <h3 id="ganhador-nome" class="font-cinzel text-2xl md:text-3xl font-bold text-white mb-1">---</h3>
                         <p id="ganhador-tel" class="text-sm text-amber-300 mb-4">---</p>
-                        <a id="btn-wpp-ganhador" href="#" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-lg transition-all">
-                            📲 Notificar Ganhador no WhatsApp
+                        <a id="btn-wpp-ganhador" href="#" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105">
+                            📲 Enviar Comprovante do Prêmio para o Ganhador no WhatsApp
                         </a>
                     </div>
                 </div>
@@ -162,12 +162,13 @@
 
     <!-- SCRIPT DE INTEGRAÇÃO COM SUPABASE -->
     <script>
-        // CONFIGURAÇÕES DO SUPABASE
+        // CONFIGURAÇÕES DO SUPABASE COM SUAS CHAVES
         const SUPABASE_URL = 'https://qxqxjrpdhhrsgxjzypua.supabase.co';
         const SUPABASE_ANON_KEY = 'Sb_publishable_gRb2WDgOwFDV6UEQ2kgoew_UIh8jCBM';
         
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        const TOTAL_NUMEROS = 135; // Expansão para 135 números
         const SENHA_ADMIN_MESTRE = '010926'; // Senha para abrir o painel de sorteio
         let numeroSelecionado = null;
         let reservasMap = {}; // Estrutura local com as reservas do banco
@@ -178,11 +179,27 @@
             escutarMudancasTempoReal();
         });
 
-        // Montar a tabela de 1 a 100
+        // Máscara Automática de WhatsApp com DDD: (XX) XXXXX-XXXX
+        function mascaraTelefone(input) {
+            let value = input.value.replace(/\D/g, "");
+            if (value.length > 11) value = value.slice(0, 11);
+            
+            if (value.length > 6) {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2, 7)}-${value.slice(7)}`;
+            } else if (value.length > 2) {
+                input.value = `(${value.slice(0, 2)}) ${value.slice(2)}`;
+            } else if (value.length > 0) {
+                input.value = `(${value}`;
+            } else {
+                input.value = "";
+            }
+        }
+
+        // Montar a tabela de 1 a 135
         function renderizarGridVisual() {
             const grid = document.getElementById('grid-numeros');
             grid.innerHTML = '';
-            for (let i = 1; i <= 100; i++) {
+            for (let i = 1; i <= TOTAL_NUMEROS; i++) {
                 const btn = document.createElement('button');
                 btn.id = `num-${i}`;
                 btn.className = "aspect-square rounded-xl bg-[#2A1813] border border-amber-500/20 font-cinzel font-bold text-sm md:text-base flex items-center justify-center transition-all shadow-md text-amber-200/80 hover:border-amber-400";
@@ -194,23 +211,29 @@
 
         // Buscar dados sincronizados do Supabase
         async function buscarReservasDoBanco() {
-            const { data, error } = await supabaseClient.from('reservas').select('*');
-            if (error) {
-                console.error('Erro ao carregar reservas:', error);
-                return;
+            try {
+                const { data, error } = await supabaseClient.from('reservas').select('*');
+                if (error) {
+                    console.error('Erro ao carregar reservas:', error);
+                    return;
+                }
+                reservasMap = {};
+                if (data) {
+                    data.forEach(item => {
+                        reservasMap[item.numero] = { nome: item.nome, telefone: item.telefone };
+                    });
+                }
+                atualizarVisualTabela();
+            } catch (err) {
+                console.error("Exceção ao buscar dados:", err);
             }
-            reservasMap = {};
-            data.forEach(item => {
-                reservasMap[item.numero] = { nome: item.nome, telefone: item.telefone };
-            });
-            atualizarVisualTabela();
         }
 
         // Conexão em tempo real via WebSockets
         function escutarMudancasTempoReal() {
             supabaseClient
                 .channel('public:reservas')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas' }, payload => {
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'reservas' }, () => {
                     buscarReservasDoBanco();
                 })
                 .subscribe();
@@ -218,7 +241,7 @@
 
         // Atualizar cor dos botões (Disponível x Reservado)
         function atualizarVisualTabela() {
-            for (let i = 1; i <= 100; i++) {
+            for (let i = 1; i <= TOTAL_NUMEROS; i++) {
                 const btn = document.getElementById(`num-${i}`);
                 if (!btn) continue;
 
@@ -251,56 +274,65 @@
         async function salvarReserva(event) {
             event.preventDefault();
             const nome = document.getElementById('nome-cliente').value.trim();
-            const telefone = document.getElementById('tel-cliente').value.trim();
+            const telefoneFormatted = document.getElementById('tel-cliente').value.trim();
+            const telefoneApenasNumeros = telefoneFormatted.replace(/\D/g, "");
 
-            if (!nome || !telefone || !numeroSelecionado) return;
+            if (!nome || telefoneApenasNumeros.length < 10 || !numeroSelecionado) {
+                alert("Por favor, preencha o seu nome e um número de WhatsApp válido com DDD.");
+                return;
+            }
 
             const btnConfirmar = document.getElementById('btn-confirmar');
             btnConfirmar.innerText = "Verificando...";
             btnConfirmar.disabled = true;
 
-            // 1. Validar se o telefone já foi utilizado em outro número
-            const { data: telExistente, error: errTel } = await supabaseClient
-                .from('reservas')
-                .select('*')
-                .eq('telefone', telefone);
+            try {
+                // 1. Validar se o telefone já foi utilizado em outro número
+                const { data: listaAtual, error: errBusca } = await supabaseClient.from('reservas').select('*');
 
-            if (errTel) {
-                alert('Erro ao validar cadastro. Tente novamente.');
-                resetarBotaoConfirmar();
-                return;
-            }
+                if (!errBusca && listaAtual) {
+                    const jaExiste = listaAtual.some(item => {
+                        const telBancoLimpo = item.telefone.replace(/\D/g, "");
+                        return telBancoLimpo === telefoneApenasNumeros;
+                    });
 
-            if (telExistente && telExistente.length > 0) {
-                alert('❌ Este telefone já possui uma reserva registrada! Cada telefone só pode escolher um número.');
-                resetarBotaoConfirmar();
-                return;
-            }
+                    if (jaExiste) {
+                        alert('❌ Este número de telefone já possui uma reserva ativa! Não é permitido o mesmo telefone para mais de um número.');
+                        resetarBotaoConfirmar();
+                        return;
+                    }
+                }
 
-            // 2. Gravar no Supabase
-            const { error: errInsert } = await supabaseClient
-                .from('reservas')
-                .insert([{ numero: numeroSelecionado, nome: nome, telefone: telefone }]);
+                // 2. Gravar no Supabase
+                const { error: errInsert } = await supabaseClient
+                    .from('reservas')
+                    .insert([{ numero: numeroSelecionado, nome: nome, telefone: telefoneFormatted }]);
 
-            if (errInsert) {
-                alert('❌ Este número acabou de ser escolhido por outra pessoa! Escolha outro.');
-                buscarReservasDoBanco();
+                if (errInsert) {
+                    alert('❌ Não foi possível realizar a reserva. Este número pode já ter sido escolhido.');
+                    buscarReservasDoBanco();
+                    fecharModalCadastro();
+                    resetarBotaoConfirmar();
+                    return;
+                }
+
+                // Sucesso! Abrir mensagem formatada de comprovante no WhatsApp
+                const numFormatado = numeroSelecionado < 10 ? `0${numeroSelecionado}` : numeroSelecionado;
                 fecharModalCadastro();
                 resetarBotaoConfirmar();
-                return;
+                buscarReservasDoBanco();
+
+                const textoWpp = encodeURIComponent(`Olá! Confirmo a reserva do meu número da sorte *#${numFormatado}* na Gabryelle Prime Music.\n\nNome: ${nome}\nTelefone: ${telefoneFormatted}`);
+                
+                // Número do WhatsApp do estabelecimento
+                const seuWhatsApp = "5577999999999"; 
+                window.open(`https://wa.me/${seuWhatsApp}?text=${textoWpp}`, '_blank');
+
+            } catch (err) {
+                console.error(err);
+                alert("Ocorreu um erro inesperado. Tente novamente.");
+                resetarBotaoConfirmar();
             }
-
-            // Sucesso! Abrir mensagem formatada de comprovante no WhatsApp
-            const numFormatado = numeroSelecionado < 10 ? `0${numeroSelecionado}` : numeroSelecionado;
-            fecharModalCadastro();
-            resetarBotaoConfirmar();
-            buscarReservasDoBanco();
-
-            const textoWpp = encodeURIComponent(`Olá! Confirmo a reserva do meu número da sorte *#${numFormatado}* na Gabryelle Prime Music.\n\nNome: ${nome}\nTelefone: ${telefone}`);
-            
-            // Coloque o número do WhatsApp do restaurante/atendimento abaixo (com DDD)
-            const seuWhatsApp = "5577999999999"; 
-            window.open(`https://wa.me/${seuWhatsApp}?text=${textoWpp}`, '_blank');
         }
 
         function resetarBotaoConfirmar() {
@@ -343,7 +375,7 @@
         async function carregarReservas() {
             await buscarReservasDoBanco();
             const total = Object.keys(reservasMap).length;
-            document.getElementById('total-preenchidos').innerText = `${total} / 100`;
+            document.getElementById('total-preenchidos').innerText = `${total} / ${TOTAL_NUMEROS}`;
         }
 
         async function resetarTabela() {
@@ -392,8 +424,11 @@
                     document.getElementById('ganhador-nome').innerText = dadosGanhador.nome;
                     document.getElementById('ganhador-tel').innerText = `Telefone: ${dadosGanhador.telefone}`;
                     
-                    const msgWppGanhador = encodeURIComponent(`Parabéns ${dadosGanhador.nome}! 🏆 Você ganhou o sorteio da Gabryelle Prime Music com o número #${numFinalStr}! Entre em contato para resgatar o seu prêmio.`);
-                    document.getElementById('btn-wpp-ganhador').href = `https://wa.me/55${dadosGanhador.telefone.replace(/\D/g, '')}?text=${msgWppGanhador}`;
+                    // Mensagem Oficial do Resultado para o Ganhador no WhatsApp
+                    const msgWppGanhador = encodeURIComponent(`Parabéns ${dadosGanhador.nome}! 🏆\n\nVocê é o grande GANHADOR do sorteio da *Gabryelle Prime Music* com o número da sorte *#${numFinalStr}*!\n\nEntre em contato conosco para combinar o recebimento do seu prêmio! 🎉🍕`);
+                    
+                    const telGanhadorLimpo = dadosGanhador.telefone.replace(/\D/g, '');
+                    document.getElementById('btn-wpp-ganhador').href = `https://wa.me/55${telGanhadorLimpo}?text=${msgWppGanhador}`;
                     
                     document.getElementById('container-ganhador').classList.remove('hidden');
                     btnSortear.disabled = false;
