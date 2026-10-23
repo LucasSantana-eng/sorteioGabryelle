@@ -49,10 +49,15 @@
             </div>
         </div>
 
-        <!-- Botão Acesso Restrito do Sorteio -->
-        <button onclick="abrirModalAdmin()" class="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-black font-bold px-5 py-2.5 rounded-xl shadow-lg transition-all transform hover:scale-105 text-sm flex items-center gap-2 border border-amber-300/40">
-            <span>⚙️ Painel de Sorteio</span>
-        </button>
+        <!-- Botões do Cabeçalho -->
+        <div class="flex items-center gap-2">
+            <button onclick="abrirModalGanhadores()" class="bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold px-4 py-2.5 rounded-xl shadow-lg transition-all text-xs flex items-center gap-2">
+                🏆 Ganhadores
+            </button>
+            <button onclick="abrirModalAdmin()" class="bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-black font-bold px-4 py-2.5 rounded-xl shadow-lg transition-all text-xs flex items-center gap-2 border border-amber-300/40">
+                ⚙️ Sorteio
+            </button>
+        </div>
     </header>
 
     <!-- ÁREA PRINCIPAL / TABELA DE 135 NÚMEROS -->
@@ -66,15 +71,15 @@
             </div>
         </div>
 
-        <!-- Grid de 10 Colunas adaptável para 135 Números -->
+        <!-- Grid de Colunas adaptável para 135 Números -->
         <div id="grid-numeros" class="grid grid-cols-5 sm:grid-cols-10 gap-2 md:gap-3">
             <!-- Gerado via JS -->
         </div>
     </main>
 
     <!-- RODAPÉ -->
-    <footer class="text-center text-xs text-amber-500/50 pb-4 font-cinzel">
-        Lucas Henrique &copy; 2026 - Todos os direitos reservados
+    <footer class="text-center text-xs text-amber-500/60 pb-4 font-cinzel">
+        Desenvolvido por Lucas Henrique &copy; 2026 - Todos os direitos reservados
     </footer>
 
     <!-- MODAL DE CADASTRO -->
@@ -97,6 +102,42 @@
                     <button type="submit" id="btn-confirmar" class="flex-1 gold-gradient text-black font-bold py-3 rounded-xl text-sm shadow-lg transition-all hover:opacity-90">Confirmar Reserva</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- MODAL DE ENVIO DO COMPROVANTE EXCLUSIVO PARA GRUPO DO WHATSAPP -->
+    <div id="modal-envio-wpp" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-[#20120E] border border-amber-500/40 rounded-2xl max-w-sm w-full p-6 shadow-2xl text-center">
+            <span class="text-4xl mb-3 inline-block">🍕✨</span>
+            <h3 class="font-cinzel text-lg font-bold gold-text mb-1">Reserva Registrada!</h3>
+            <p class="text-xs text-gray-300 mb-6">Envie o seu comprovante com a mensagem pronta direto no grupo do WhatsApp!</p>
+
+            <button onclick="enviarViaCompartilhamento()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all transform hover:scale-[1.02]">
+                📲 Enviar Comprovante no Grupo
+            </button>
+        </div>
+    </div>
+
+    <!-- ABA SEPARADA / MODAL DE GANHADORES -->
+    <div id="modal-ganhadores" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-[#20120E] border border-amber-500/40 rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[85vh] flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between pb-4 border-b border-amber-900/40 mb-4">
+                    <div>
+                        <h3 class="font-cinzel text-xl font-bold gold-text flex items-center gap-2">🏆 Mural Oficial de Ganhadores</h3>
+                        <p class="text-xs text-gray-400">Histórico de participantes contemplados nos sorteios.</p>
+                    </div>
+                    <button onclick="fecharModalGanhadores()" class="text-gray-400 hover:text-white text-lg">✕</button>
+                </div>
+
+                <div id="lista-ganhadores" class="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto max-h-[55vh] pr-1">
+                    <div class="col-span-full text-center py-6 text-sm text-gray-500">Carregando ganhadores...</div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-amber-900/40 text-right">
+                <button onclick="fecharModalGanhadores()" class="bg-white/5 border border-amber-500/30 text-amber-300 font-semibold px-5 py-2 rounded-xl text-xs">Fechar Aba</button>
+            </div>
         </div>
     </div>
 
@@ -144,9 +185,9 @@
                         <span class="inline-block bg-amber-500 text-black font-bold text-xs uppercase px-3 py-1 rounded-full mb-3 shadow-md">🎉 Ganhador Oficial 🎉</span>
                         <h3 id="ganhador-nome" class="font-cinzel text-2xl md:text-3xl font-bold text-white mb-1">---</h3>
                         <p id="ganhador-tel" class="text-sm text-amber-300 mb-4">---</p>
-                        <a id="btn-wpp-ganhador" href="#" target="_blank" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105">
-                            📲 Enviar Comprovante do Prêmio para o Ganhador no WhatsApp
-                        </a>
+                        <button onclick="postarResultadoGanhadorNoGrupo()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-6 py-3 rounded-xl shadow-lg transition-all transform hover:scale-105">
+                            📲 Postar Resultado no Grupo do WhatsApp
+                        </button>
                     </div>
                 </div>
             </div>
@@ -162,15 +203,16 @@
 
     <!-- SCRIPT DE INTEGRAÇÃO COM SUPABASE -->
     <script>
-        // CREDENCIAIS OFICIAIS ATUALIZADAS
         const SUPABASE_URL = 'https://qxqxjrpdhhrsgxjzypua.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_gRb2WDgOwFDV6UEQ2kgoew_UIh8jCBM';
-        
+
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         const TOTAL_NUMEROS = 135;
-        const SENHA_ADMIN_MESTRE = '010926';
+        const SENHA_ADMIN_MESTRE = '1644'; // NOVA SENHA ATUALIZADA
         let numeroSelecionado = null;
+        let dadosReservaAtual = null;
+        let dadosGanhadorSorteado = null;
         let reservasMap = {};
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -210,10 +252,7 @@
         async function buscarReservasDoBanco() {
             try {
                 const { data, error } = await supabaseClient.from('reservas').select('*');
-                if (error) {
-                    console.error('Erro ao carregar reservas:', error);
-                    return;
-                }
+                if (error) return;
                 reservasMap = {};
                 if (data) {
                     data.forEach(item => {
@@ -222,7 +261,7 @@
                 }
                 atualizarVisualTabela();
             } catch (err) {
-                console.error("Exceção ao buscar dados:", err);
+                console.error("Exceção:", err);
             }
         }
 
@@ -293,14 +332,18 @@
                     return;
                 }
 
-                const numFormatado = numeroSelecionado < 10 ? `0${numeroSelecionado}` : numeroSelecionado;
+                dadosReservaAtual = {
+                    numero: numeroSelecionado < 10 ? `0${numeroSelecionado}` : numeroSelecionado,
+                    nome: nome,
+                    telefone: telefoneFormatted
+                };
+
                 fecharModalCadastro();
                 resetarBotaoConfirmar();
                 buscarReservasDoBanco();
 
-                const textoWpp = encodeURIComponent(`Olá! Confirmo a reserva do meu número da sorte *#${numFormatado}* na Gabryelle Prime Music.\n\nNome: ${nome}\nTelefone: ${telefoneFormatted}`);
-                const seuWhatsApp = "5577999999999"; 
-                window.open(`https://wa.me/${seuWhatsApp}?text=${textoWpp}`, '_blank');
+                document.getElementById('modal-envio-wpp').classList.remove('hidden');
+                document.getElementById('modal-envio-wpp').classList.add('flex');
 
             } catch (err) {
                 alert(`❌ EXCEÇÃO:\n${err.message || err}`);
@@ -308,10 +351,116 @@
             }
         }
 
+        // MENSAGEM DO COMPROVANTE TURBINADA
+        async function enviarViaCompartilhamento() {
+            if (!dadosReservaAtual) return;
+
+            const textoMensagem = `🍕✨ *COMPROVANTE DE RESERVA OFICIAL* ✨🍕\n🏆 *GABRYELLE PRIME MUSIC* 🎵\n\n🎟️ *Número da Sorte:* [ *#${dadosReservaAtual.numero}* ]\n👤 *Participante:* ${dadosReservaAtual.nome}\n📱 *Contato:* ${dadosReservaAtual.telefone}\n\n🎯 *Número garantido com sucesso! Rumo ao prêmio!* 🚀🔥`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Comprovante de Reserva - Gabryelle Prime Music',
+                        text: textoMensagem
+                    });
+                    fecharModalEnvioWpp();
+                    return;
+                } catch (err) {
+                    console.log("Compartilhamento cancelado", err);
+                }
+            }
+
+            const textoURLEncoded = encodeURIComponent(textoMensagem);
+            window.open(`https://api.whatsapp.com/send?text=${textoURLEncoded}`, '_blank');
+            fecharModalEnvioWpp();
+        }
+
+        // POSTAR MENSAGEM DO GANHADOR NO GRUPO
+        async function postarResultadoGanhadorNoGrupo() {
+            if (!dadosGanhadorSorteado) return;
+
+            const textoMensagem = `🥳🎉 *PARABÉNS! VOCÊ É O GRANDE GANHADOR!* 🎉🥳\n🏆 *SORTEIO OFICIAL - GABRYELLE PRIME MUSIC* 🎵\n\n───────────────\n🎟️ *Número Contemplado:* [ *#${dadosGanhadorSorteado.numero}* ]\n👤 *Nome do Vencedor:* ${dadosGanhadorSorteado.nome}\n🎁 *Prêmio:* Pizza Prime Gabryelle Music 🍕✨\n───────────────\n\n🚀 *O seu número da sorte foi o grande campeão na nossa roleta oficial!*\n📲 *Entre em contato conosco para combinar o recebimento do seu prêmio!* 🔥🤩`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Resultado do Sorteio - Gabryelle Prime Music',
+                        text: textoMensagem
+                    });
+                    return;
+                } catch (err) {
+                    console.log("Compartilhamento cancelado", err);
+                }
+            }
+
+            const textoURLEncoded = encodeURIComponent(textoMensagem);
+            window.open(`https://api.whatsapp.com/send?text=${textoURLEncoded}`, '_blank');
+        }
+
+        function fecharModalEnvioWpp() {
+            document.getElementById('modal-envio-wpp').classList.remove('flex');
+            document.getElementById('modal-envio-wpp').classList.add('hidden');
+            dadosReservaAtual = null;
+        }
+
         function resetarBotaoConfirmar() {
             const btnConfirmar = document.getElementById('btn-confirmar');
             btnConfirmar.innerText = "Confirmar Reserva";
             btnConfirmar.disabled = false;
+        }
+
+        function abrirModalGanhadores() {
+            document.getElementById('modal-ganhadores').classList.remove('hidden');
+            document.getElementById('modal-ganhadores').classList.add('flex');
+            buscarGanhadoresDoBanco();
+        }
+
+        function fecharModalGanhadores() {
+            document.getElementById('modal-ganhadores').classList.remove('flex');
+            document.getElementById('modal-ganhadores').classList.add('hidden');
+        }
+
+        // BUSCA E EXIBE OS GANHADORES COM O MAIS RECENTE SEMPRE NO TOPO DA LISTA (ORDER BY ID DESC)
+        async function buscarGanhadoresDoBanco() {
+            const container = document.getElementById('lista-ganhadores');
+            try {
+                const { data, error } = await supabaseClient
+                    .from('ganhadores')
+                    .select('*')
+                    .order('id', { ascending: false });
+
+                if (error || !data || data.length === 0) {
+                    container.innerHTML = `<div class="col-span-full text-center py-8 text-sm text-gray-500">Nenhum ganhador registrado até o momento. Seja o próximo! 🏆</div>`;
+                    return;
+                }
+
+                container.innerHTML = '';
+                data.forEach((g, index) => {
+                    const numFormatted = g.numero < 10 ? `0${g.numero}` : g.numero;
+                    const dataFormatada = new Date(g.criado_em).toLocaleDateString('pt-BR');
+                    const eOPrimeiro = index === 0;
+
+                    const card = document.createElement('div');
+                    card.className = `bg-[#251511] border ${eOPrimeiro ? 'border-amber-400/80 shadow-[0_0_15px_rgba(251,245,183,0.15)]' : 'border-amber-500/20'} rounded-xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden`;
+                    
+                    card.innerHTML = `
+                        ${eOPrimeiro ? '<span class="absolute top-0 right-0 bg-amber-500 text-black text-[9px] font-bold px-2 py-0.5 rounded-bl-lg uppercase tracking-wider">Mais Recente 🌟</span>' : ''}
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl gold-gradient text-black font-cinzel font-black text-base flex items-center justify-center shadow-md">
+                                #${numFormatted}
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-xs sm:text-sm">${g.nome}</h4>
+                                <p class="text-[11px] text-amber-300/80">${g.telefone}</p>
+                            </div>
+                        </div>
+                        <span class="text-[10px] text-gray-400 font-mono self-end">${dataFormatada}</span>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `<div class="col-span-full text-center py-4 text-xs text-gray-500">Erro ao carregar ganhadores.</div>`;
+            }
         }
 
         function abrirModalAdmin() {
@@ -378,7 +527,7 @@
 
             let contador = 0;
             const maxGiros = 25;
-            const intervalo = setInterval(() => {
+            const intervalo = setInterval(async () => {
                 const aleatorioTemp = numerosOcupados[Math.floor(Math.random() * numerosOcupados.length)];
                 display.innerText = aleatorioTemp < 10 ? `0${aleatorioTemp}` : aleatorioTemp;
                 contador++;
@@ -394,12 +543,19 @@
 
                     document.getElementById('ganhador-nome').innerText = dadosGanhador.nome;
                     document.getElementById('ganhador-tel').innerText = `Telefone: ${dadosGanhador.telefone}`;
+
+                    dadosGanhadorSorteado = {
+                        numero: numFinalStr,
+                        nome: dadosGanhador.nome,
+                        telefone: dadosGanhador.telefone
+                    };
                     
-                    const msgWppGanhador = encodeURIComponent(`Parabéns ${dadosGanhador.nome}! 🏆\n\nVocê é o grande GANHADOR do sorteio da *Gabryelle Prime Music* com o número da sorte *#${numFinalStr}*!\n\nEntre em contato conosco para combinar o recebimento do seu prêmio! 🎉🍕`);
-                    
-                    const telGanhadorLimpo = dadosGanhador.telefone.replace(/\D/g, '');
-                    document.getElementById('btn-wpp-ganhador').href = `https://wa.me/55${telGanhadorLimpo}?text=${msgWppGanhador}`;
-                    
+                    await supabaseClient.from('ganhadores').insert([{
+                        numero: ganhadorSorteadoNum,
+                        nome: dadosGanhador.nome,
+                        telefone: dadosGanhador.telefone
+                    }]);
+
                     document.getElementById('container-ganhador').classList.remove('hidden');
                     btnSortear.disabled = false;
 
